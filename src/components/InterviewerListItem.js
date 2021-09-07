@@ -11,7 +11,7 @@ export default function(props) {
 	return (
 		<li className={interviewerClass} onClick={() => props.setInterviewer()}>
 			<img className={imageItemClass} src={props.avatar} alt={props.name} />
-			{props.name}
+			{props.selected && props.name}
 		</li>
 	);
 }
