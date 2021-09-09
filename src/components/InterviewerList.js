@@ -7,22 +7,33 @@ export default function InterviewerList({
 	interviewer,
 	setInterviewer
 }) {
-	const populateInterviewers = () => {
-		return interviewers.map((interviewee) => (
+	const populateInterviewers = interviewers.map((interviewee) => {
+		return (
 			<InterviewerListItem
 				key={interviewee.id}
 				name={interviewee.name}
 				avatar={interviewee.avatar}
-				setInterviewer={setInterviewer}
+				setInterviewer={(e) => setInterviewer(interviewee.id)}
 				selected={interviewee.id === interviewer}
 			/>
-		));
-	};
+		);
+	});
 
+	//   const interviewers = props.interviewers.map(interviewer => {
+	//   return (
+	//     <InterviewerListItem
+	//       key={interviewer.id}
+	//       name={interviewer.name}
+	//       avatar={interviewer.avatar}
+	//       selected={interviewer.id === props.interviewer}
+	//       setInterviewer={event => props.setInterviewer(interviewer.id)}
+	//     />
+	//   );
+	// });
 	return (
 		<section className="interviewers">
 			<h4 className="interviewers__header text--light">Interviewer</h4>
-			<ul className="interviewers__list">{populateInterviewers()}</ul>
+			<ul className="interviewers__list">{populateInterviewers}</ul>
 		</section>
 	);
 }
