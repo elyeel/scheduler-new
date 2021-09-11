@@ -61,7 +61,7 @@ export default function Application(props) {
 			.catch(function(error) {
 				console.log(error);
 			});
-		return () => {};
+		// return () => {};
 	}, []);
 
 	const schedule = appointments.map((appointment) => (
