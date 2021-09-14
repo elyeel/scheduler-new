@@ -65,6 +65,10 @@ export default function Application(props) {
 		axios.put(`api/appointments/${id}`, { id, interview });
 	}
 
+	function cancelInterview(id, interview) {
+		console.log(id, interview);
+	}
+
 	const appointments = getAppointmentsForDay(state, state.day);
 	const interviewers = getInterviewersForDay(state, state.day);
 	const schedule = appointments.map((appointment) => {
@@ -77,6 +81,7 @@ export default function Application(props) {
 				interview={interview}
 				bookInterview={bookInterview}
 				interviewers={interviewers}
+				cancelInterview={cancelInterview}
 			/>
 		);
 	});

@@ -1,7 +1,12 @@
 import React from 'react';
 import Button from 'components/Button';
 
-export default function Confirm({ onConfirm, onCancel }) {
+export default function Confirm({ destroyAppointment, transition }) {
+	const onConfirm = () => {
+		destroyAppointment();
+	};
+	const onCancel = () => transition('SHOW');
+
 	return (
 		<main className="appointment__card appointment__card--confirm">
 			<h1 className="text--semi-bold">Delete the appointment?</h1>

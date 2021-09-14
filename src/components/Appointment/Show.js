@@ -1,6 +1,13 @@
 import React from 'react';
 
-export default function Show({ student, interviewer, onEdit, onDelete }) {
+export default function Show({ student, interviewer, onEdit, transition }) {
+	const onDelete = () => {
+		transition('CONFIRM');
+		// props.cancel(interviewer.id, props.student, interviewer);
+		// setStudentName('');
+		// setInterviewer(null);
+	};
+
 	return (
 		<main className="appointment__card appointment__card--show">
 			<section className="appointment__card-left">
