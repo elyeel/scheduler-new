@@ -3,7 +3,7 @@ import InterviewerList from 'components/InterviewerList';
 import Button from 'components/Button';
 
 export default function Form(props) {
-	const { interviewers, onSave, onCancel } = props;
+	const { interviewers, onSave, back } = props;
 	const [ studentName, setStudentName ] = useState(props.name || '');
 	const [ interviewer, setInterviewer ] = useState(props.interviewer || null);
 
@@ -14,7 +14,7 @@ export default function Form(props) {
 
 	const cancel = () => {
 		reset();
-		onCancel();
+		back();
 	};
 
 	// const submit = event => event.preventDefault()
