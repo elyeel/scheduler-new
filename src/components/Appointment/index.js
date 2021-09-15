@@ -14,7 +14,7 @@ const CREATE = 'CREATE';
 const SAVING = 'SAVING';
 const DELETING = 'DELETING';
 const CONFIRM = 'CONFIRM';
-
+const EDIT = 'EDIT';
 // import { Header, Show, Empty } from '../Appointment';
 
 export default function Appointment({
@@ -23,7 +23,8 @@ export default function Appointment({
 	interview,
 	bookInterview,
 	interviewers,
-	cancelInterview
+	cancelInterview,
+	editInterview
 }) {
 	const { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY);
 
@@ -51,6 +52,18 @@ export default function Appointment({
 		}, 1000);
 	}
 
+	// function edit(name, interviewer) {
+	// 	const interview = {
+	// 		student: name,
+	// 		interviewer
+	// 	};
+	// 	transition(SAVING);
+	// 	setTimeout(() => {
+	// 		editInterview(id, interview);
+	// 		transition(SHOW);
+	// 	}, 1000);
+	// }
+
 	return (
 		<article className="appointment">
 			<Header time={time} />
@@ -71,6 +84,15 @@ export default function Appointment({
 				<Confirm
 					destroyAppointment={destroyAppointment}
 					transition={transition}
+				/>
+			)}
+			{mode === EDIT && (
+				<Form
+					interviewers={interviewers}
+					save={save}
+					back={back}
+					name={interview.student}
+					interviewer={interview.interviewer.id}
 				/>
 			)}
 		</article>

@@ -1,11 +1,15 @@
 import React from 'react';
 
-export default function Show({ student, interviewer, onEdit, transition }) {
+export default function Show({ student, interviewer, transition }) {
 	const onDelete = () => {
 		transition('CONFIRM');
 		// props.cancel(interviewer.id, props.student, interviewer);
 		// setStudentName('');
 		// setInterviewer(null);
+	};
+
+	const onEdit = () => {
+		transition('EDIT');
 	};
 
 	return (
