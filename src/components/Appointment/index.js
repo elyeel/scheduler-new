@@ -33,18 +33,20 @@ export default function Appointment({
 			interviewer
 		};
 		transition(SAVING);
-		bookInterview(id, interview);
-		transition(SHOW);
+		setTimeout(() => {
+			bookInterview(id, interview);
+			transition(SHOW);
+		}, 1000);
 	}
 
-	function destroyAppointment(id, name, interviewer) {
-		const interview = {
-			student: name,
-			interviewer
-		};
+	function destroyAppointment() {
+		// const interview = {
+		// 	student: name,
+		// 	interviewer
+		// };
 		transition(DELETING);
 		setTimeout(() => {
-			cancelInterview(id, interview);
+			cancelInterview(id);
 			transition(EMPTY);
 		}, 1000);
 	}
