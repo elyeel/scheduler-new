@@ -34,10 +34,8 @@ export default function Appointment({
 			interviewer
 		};
 		transition(SAVING);
-		setTimeout(() => {
-			bookInterview(id, interview);
-			transition(SHOW);
-		}, 1000);
+		Promise.resolve(bookInterview(id, interview)).then(() => transition(SHOW));
+		// transition(SHOW);
 	}
 
 	function destroyAppointment() {

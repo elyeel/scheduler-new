@@ -60,9 +60,20 @@ export default function Application(props) {
 			...state.appointments,
 			[id]: appointment
 		};
-		setState({ ...state, appointments });
-		console.log(id, interview);
-		axios.put(`api/appointments/${id}`, { id, interview });
+
+		const bookingConfig = {
+			method: 'put',
+			url: `http://localhost:8001/api/appointments/${id}`,
+			data: { id, interview }
+		};
+		return axios(bookingConfig)
+			.then((response) => {
+				if (response.status >= 200 && response.status < 210)
+					setState({ ...state, appointments });
+			})
+			.catch((err) => console.log(err));
+
+		// console.log(id, interview);
 	}
 
 	function cancelInterview(id) {
