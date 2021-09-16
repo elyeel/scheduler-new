@@ -66,11 +66,10 @@ export default function Application(props) {
 			url: `http://localhost:8001/api/appointments/${id}`,
 			data: { id, interview }
 		};
-		return axios(bookingConfig).then((response) => {
-			if (response.status >= 200 && response.status < 210)
-				setState({ ...state, appointments });
+		return axios(bookingConfig).then(
+			() => setState({ ...state, appointments })
 			// console.log(id, interview);
-		});
+		);
 		// .catch((err) => console.log(err));
 	}
 
@@ -89,28 +88,13 @@ export default function Application(props) {
 			url: `http://localhost:8001/api/appointments/${id}`
 		};
 
-		return axios(destroyApptConfig).then((response) => {
-			if (response.status > 199 && response.status < 210)
-				setState({ ...state, appointments });
-		});
+		return axios(destroyApptConfig).then(() =>
+			setState({ ...state, appointments })
+		);
 		// .catch((err) => console.error(err));
 		// console.log(appointment, appointments);
 
 		// setTimeout(() => console.log(state), 3000);
-	}
-
-	function editInterview(id, interview) {
-		// const appointment = {
-		// 	...state.appointments[id],
-		// 	interview: { ...interview }
-		// };
-		// const appointments = {
-		// 	...state.appointments,
-		// 	[id]: appointment
-		// };
-		// setState({ ...state, appointments });
-		console.log(id, interview);
-		// axios.put(`api/appointments/${id}`, { id, interview });
 	}
 
 	const appointments = getAppointmentsForDay(state, state.day);
@@ -126,7 +110,6 @@ export default function Application(props) {
 				bookInterview={bookInterview}
 				interviewers={interviewers}
 				cancelInterview={cancelInterview}
-				editInterview={editInterview}
 			/>
 		);
 	});

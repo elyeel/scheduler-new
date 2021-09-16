@@ -48,7 +48,7 @@ export default function Appointment({
 		// 	student: name,
 		// 	interviewer
 		// };
-		transition(DELETING, true);
+		transition(DELETING);
 		Promise.resolve(cancelInterview(id))
 			.then(() => transition(EMPTY))
 			.catch((err) => transition(ERROR_DELETE, true));
@@ -57,7 +57,7 @@ export default function Appointment({
 
 	const onClose = () => {
 		back();
-		back();
+		// back();
 	};
 
 	// function edit(name, interviewer) {
