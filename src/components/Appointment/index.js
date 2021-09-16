@@ -60,18 +60,6 @@ export default function Appointment({
 		// back();
 	};
 
-	// function edit(name, interviewer) {
-	// 	const interview = {
-	// 		student: name,
-	// 		interviewer
-	// 	};
-	// 	transition(SAVING);
-	// 	setTimeout(() => {
-	// 		editInterview(id, interview);
-	// 		transition(SHOW);
-	// 	}, 1000);
-	// }
-
 	return (
 		<article className="appointment">
 			<Header time={time} />
