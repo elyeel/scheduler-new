@@ -66,14 +66,12 @@ export default function Application(props) {
 			url: `http://localhost:8001/api/appointments/${id}`,
 			data: { id, interview }
 		};
-		return axios(bookingConfig)
-			.then((response) => {
-				if (response.status >= 200 && response.status < 210)
-					setState({ ...state, appointments });
-			})
-			.catch((err) => console.log(err));
-
-		// console.log(id, interview);
+		return axios(bookingConfig).then((response) => {
+			if (response.status >= 200 && response.status < 210)
+				setState({ ...state, appointments });
+			// console.log(id, interview);
+		});
+		// .catch((err) => console.log(err));
 	}
 
 	function cancelInterview(id) {
@@ -85,9 +83,19 @@ export default function Application(props) {
 			...state.appointments,
 			[id]: appointment
 		};
+
+		const destroyApptConfig = {
+			method: 'delete',
+			url: `http://localhost:8001/api/appointments/${id}`
+		};
+
+		return axios(destroyApptConfig).then((response) => {
+			if (response.status > 199 && response.status < 210)
+				setState({ ...state, appointments });
+		});
+		// .catch((err) => console.error(err));
 		// console.log(appointment, appointments);
-		setState({ ...state, appointments });
-		axios.delete(`api/appointments/${id}`);
+
 		// setTimeout(() => console.log(state), 3000);
 	}
 

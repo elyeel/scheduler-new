@@ -5,6 +5,7 @@ import Header from './Header';
 import Form from './Form';
 import Status from './Status';
 import Confirm from './Confirm';
+import Error from './Error';
 import './styles.scss';
 import useVisualMode from 'hooks/useVisualMode';
 
@@ -15,6 +16,8 @@ const SAVING = 'SAVING';
 const DELETING = 'DELETING';
 const CONFIRM = 'CONFIRM';
 const EDIT = 'EDIT';
+const ERROR_SAVE = 'ERROR_SAVE';
+const ERROR_DELETE = 'ERROR_DELETE';
 // import { Header, Show, Empty } from '../Appointment';
 
 export default function Appointment({
@@ -34,7 +37,9 @@ export default function Appointment({
 			interviewer
 		};
 		transition(SAVING);
-		Promise.resolve(bookInterview(id, interview)).then(() => transition(SHOW));
+		Promise.resolve(bookInterview(id, interview))
+			.then(() => transition(SHOW))
+			.catch((err) => transition(ERROR_SAVE, true));
 		// transition(SHOW);
 	}
 
@@ -43,12 +48,17 @@ export default function Appointment({
 		// 	student: name,
 		// 	interviewer
 		// };
-		transition(DELETING);
-		setTimeout(() => {
-			cancelInterview(id);
-			transition(EMPTY);
-		}, 1000);
+		transition(DELETING, true);
+		Promise.resolve(cancelInterview(id))
+			.then(() => transition(EMPTY))
+			.catch((err) => transition(ERROR_DELETE, true));
+		// transition(EMPTY);
 	}
+
+	const onClose = () => {
+		back();
+		back();
+	};
 
 	// function edit(name, interviewer) {
 	// 	const interview = {
@@ -92,6 +102,12 @@ export default function Appointment({
 					name={interview.student}
 					interviewer={interview.interviewer.id}
 				/>
+			)}
+			{mode === ERROR_SAVE && (
+				<Error message="Could not save the appointment" onClose={onClose} />
+			)}
+			{mode === ERROR_DELETE && (
+				<Error message="Could not cancel the appointment" onClose={onClose} />
 			)}
 		</article>
 	);
