@@ -44,10 +44,6 @@ export default function Appointment({
 	}
 
 	function destroyAppointment() {
-		// const interview = {
-		// 	student: name,
-		// 	interviewer
-		// };
 		transition(DELETING, true);
 		Promise.resolve(cancelInterview(id))
 			.then(() => transition(EMPTY))
@@ -59,18 +55,6 @@ export default function Appointment({
 		back();
 		back();
 	};
-
-	// function edit(name, interviewer) {
-	// 	const interview = {
-	// 		student: name,
-	// 		interviewer
-	// 	};
-	// 	transition(SAVING);
-	// 	setTimeout(() => {
-	// 		editInterview(id, interview);
-	// 		transition(SHOW);
-	// 	}, 1000);
-	// }
 
 	return (
 		<article className="appointment">
