@@ -38,6 +38,7 @@ export default function useApplicationData() {
 	}, []);
 
 	const updateSpots = (id, appointments) => {
+		//this can be solved by using state.day comparison with state.days to get only the spots in a day to be updated, given state.day is dynamic
 		let dayId = 0;
 		if (id > 5) dayId++;
 		if (id > 10) dayId++;
@@ -49,14 +50,11 @@ export default function useApplicationData() {
 			return a;
 		}, 0);
 
-		const tempDay = state.days[dayId];
-		tempDay.spots = spotsInDay;
-		const tempDays = state.days;
-		tempDays[dayId] = tempDay;
-		// console.log(spotsInDay, tempDay);
-		// console.log({ [dayId]: tempDay }, state.days);
-		// setState(...state, { days: tempDays }); // best candidate
-		// setState((prev) => ({ ...prev, days: { [dayId]: tempDay }}));
+		//array.map create a new array with new value based on previous
+		const tempDays = state.days.map(
+			(day) => (day.id === dayId + 1 ? { ...day, spots: spotsInDay } : day)
+		);
+
 		return tempDays;
 	};
 
@@ -75,6 +73,7 @@ export default function useApplicationData() {
 			url: `http://localhost:8001/api/appointments/${id}`,
 			data: { interview }
 		};
+		//combine update spots with appointments during setState to avoid error
 		return axios(bookingConfig).then(() => {
 			setState({ ...state, appointments, days: updateSpots(id, appointments) });
 		});
@@ -96,7 +95,6 @@ export default function useApplicationData() {
 		};
 
 		return axios(destroyApptConfig).then(() => {
-			console.log(appointment, state.appointments);
 			setState({
 				...state,
 				appointments,
