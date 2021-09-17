@@ -26,8 +26,7 @@ export default function Appointment({
 	interview,
 	bookInterview,
 	interviewers,
-	cancelInterview,
-	editInterview
+	cancelInterview
 }) {
 	const { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY);
 
@@ -40,24 +39,17 @@ export default function Appointment({
 		Promise.resolve(bookInterview(id, interview))
 			.then(() => transition(SHOW))
 			.catch((err) => transition(ERROR_SAVE, true));
-		// transition(SHOW);
 	}
 
 	function destroyAppointment() {
-		// const interview = {
-		// 	student: name,
-		// 	interviewer
-		// };
 		transition(DELETING);
 		Promise.resolve(cancelInterview(id))
 			.then(() => transition(EMPTY))
 			.catch((err) => transition(ERROR_DELETE, true));
-		// transition(EMPTY);
 	}
 
 	const onClose = () => {
 		back();
-		// back();
 	};
 
 	return (

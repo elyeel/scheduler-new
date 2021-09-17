@@ -37,6 +37,29 @@ export default function useApplicationData() {
 		});
 	}, []);
 
+	const updateSpots = (id, appointments) => {
+		let dayId = 0;
+		if (id > 5) dayId++;
+		if (id > 10) dayId++;
+		if (id > 15) dayId++;
+		if (id > 20) dayId++;
+
+		const spotsInDay = Object.values(appointments).reduce((a, c, i) => {
+			if (c.interview === null && i >= dayId * 5 && i < dayId * 5 + 5) a++;
+			return a;
+		}, 0);
+
+		const tempDay = state.days[dayId];
+		tempDay.spots = spotsInDay;
+		const tempDays = state.days;
+		tempDays[dayId] = tempDay;
+		// console.log(spotsInDay, tempDay);
+		// console.log({ [dayId]: tempDay }, state.days);
+		// setState(...state, { days: tempDays }); // best candidate
+		// setState((prev) => ({ ...prev, days: { [dayId]: tempDay }}));
+		return tempDays;
+	};
+
 	function bookInterview(id, interview) {
 		const appointment = {
 			...state.appointments[id],
@@ -50,18 +73,17 @@ export default function useApplicationData() {
 		const bookingConfig = {
 			method: 'put',
 			url: `http://localhost:8001/api/appointments/${id}`,
-			data: { id, interview }
+			data: { interview }
 		};
-		return axios(bookingConfig).then((response) => {
-			if (response.status >= 200 && response.status < 210)
-				setState({ ...state, appointments });
+		return axios(bookingConfig).then(() => {
+			setState({ ...state, appointments, days: updateSpots(id, appointments) });
 		});
 	}
 
-	function cancelInterview(id) {
+	function cancelInterview(id, interview = null) {
 		const appointment = {
 			...state.appointments[id],
-			interview: null
+			interview
 		};
 		const appointments = {
 			...state.appointments,
@@ -73,9 +95,13 @@ export default function useApplicationData() {
 			url: `http://localhost:8001/api/appointments/${id}`
 		};
 
-		return axios(destroyApptConfig).then((response) => {
-			if (response.status > 199 && response.status < 210)
-				setState({ ...state, appointments });
+		return axios(destroyApptConfig).then(() => {
+			console.log(appointment, state.appointments);
+			setState({
+				...state,
+				appointments,
+				days: updateSpots(id, appointments)
+			});
 		});
 	}
 
