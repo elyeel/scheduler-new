@@ -21,6 +21,8 @@ const SET_DAY = 'SET_DAY';
 const SET_APPLICATION_DATA = 'SET_APPLICATION_DATA';
 const SET_INTERVIEW = 'SET_INTERVIEW';
 
+let webSocket;
+
 export default function useApplicationData() {
 	function reducer(state, action) {
 		switch (action.type) {
@@ -61,7 +63,8 @@ export default function useApplicationData() {
 	// === setState({...state, day})
 
 	useEffect(() => {
-		Promise.all([ axios(first), axios(second), axios(third) ]).then((all) =>
+		webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+		Promise.all([ axios(first), axios(second), axios(third) ]).then((all) => {
 			dispatch({
 				type: SET_APPLICATION_DATA,
 				value: {
@@ -69,8 +72,30 @@ export default function useApplicationData() {
 					appointments: all[1].data,
 					interviewers: all[2].data
 				}
-			})
-		);
+			});
+
+			webSocket.onmessage = (response) => {
+				const { id, interview } = JSON.parse(response.data);
+			};
+			// webSocket.onmessage = (response) => {
+			// 	const { id, interview } = JSON.parse(response.data);
+			// 	const appointment = {
+			// 		...state.appointments[id],
+			// 		interview: { ...interview }
+			// 	};
+			// 	const appointments = {
+			// 		...state.appointments,
+			// 		[id]: appointment
+			// 	};
+			// 	console.log(response.data);
+			// 	dispatch({
+			// 		type: SET_INTERVIEW,
+			// 		value: { appointments, days: updateSpots(id, appointments) }
+			// 	});
+			// };
+		});
+
+		return () => webSocket.close();
 	}, []);
 
 	const updateSpots = (id, appointments) => {
@@ -111,10 +136,16 @@ export default function useApplicationData() {
 		};
 		//combine update spots with appointments during setState to avoid error
 		return axios(bookingConfig).then(() =>
-			dispatch({
-				type: SET_INTERVIEW,
-				value: { appointments, days: updateSpots(id, appointments) }
-			})
+			// dispatch({
+			// 	type: SET_INTERVIEW,
+			// 	value: { appointments, days: updateSpots(id, appointments) }
+			// })
+			webSocket.send(
+				JSON.stringify({
+					type: SET_INTERVIEW,
+					value: { appointments, days: updateSpots(id, appointments) }
+				})
+			)
 		);
 	}
 
@@ -134,10 +165,16 @@ export default function useApplicationData() {
 		};
 
 		return axios(destroyApptConfig).then(() =>
-			dispatch({
-				type: SET_INTERVIEW,
-				value: { appointments, days: updateSpots(id, appointments) }
-			})
+			// dispatch({
+			// 	type: SET_INTERVIEW,
+			// 	value: { appointments, days: updateSpots(id, appointments) }
+			// })
+			webSocket.send(
+				JSON.stringify({
+					type: SET_INTERVIEW,
+					value: { appointments, days: updateSpots(id, appointments) }
+				})
+			)
 		);
 	}
 
