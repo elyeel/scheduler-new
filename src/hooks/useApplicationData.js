@@ -24,19 +24,15 @@ const SET_INTERVIEW = 'SET_INTERVIEW';
 let webSocket;
 
 export default function useApplicationData() {
-	// const updateSpots = (id, appointments) => {
-
-	// return tempDays;
-	// };
-
 	function reducer(state, action) {
-		console.log(action);
 		const { id, interview } = action.value;
 
-		const appointment = {
-			...state.appointments[id],
-			interview: { ...interview }
-		};
+		const appointment = interview
+			? {
+					...state.appointments[id],
+					interview: { ...interview }
+				}
+			: { ...state.appointments[id], interview };
 		const appointments = {
 			...state.appointments,
 			[id]: appointment
@@ -123,15 +119,6 @@ export default function useApplicationData() {
 	}, []);
 
 	function bookInterview(id, interview) {
-		// const appointment = {
-		// 	...state.appointments[id],
-		// 	interview: { ...interview }
-		// };
-		// const appointments = {
-		// 	...state.appointments,
-		// 	[id]: appointment
-		// };
-
 		const bookingConfig = {
 			method: 'put',
 			url: `http://localhost:8001/api/appointments/${id}`,
@@ -139,10 +126,6 @@ export default function useApplicationData() {
 		};
 		//combine update spots with appointments during setState to avoid error
 		return axios(bookingConfig).then(() =>
-			// dispatch({
-			// 	type: SET_INTERVIEW,
-			// 	value: { appointments, days: updateSpots(id, appointments) }
-			// })
 			webSocket.send(
 				JSON.stringify({
 					type: SET_INTERVIEW,
@@ -153,25 +136,12 @@ export default function useApplicationData() {
 	}
 
 	function cancelInterview(id, interview = null) {
-		// const appointment = {
-		// 	...state.appointments[id],
-		// 	interview
-		// };
-		// const appointments = {
-		// 	...state.appointments,
-		// 	[id]: appointment
-		// };
-
 		const destroyApptConfig = {
 			method: 'delete',
 			url: `http://localhost:8001/api/appointments/${id}`
 		};
 
 		return axios(destroyApptConfig).then(() =>
-			// dispatch({
-			// 	type: SET_INTERVIEW,
-			// 	value: { appointments, days: updateSpots(id, appointments) }
-			// })
 			webSocket.send(
 				JSON.stringify({
 					type: SET_INTERVIEW,

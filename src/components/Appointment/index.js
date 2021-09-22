@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Empty from './Empty';
 import Show from './Show';
 import Header from './Header';
@@ -30,6 +30,18 @@ export default function Appointment({
 }) {
 	const { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY);
 
+	useEffect(
+		() => {
+			if (interview && mode === EMPTY) transition(SHOW);
+			if (interview === null && mode === SHOW) {
+				transition(EMPTY);
+				console.log('got here', interview, mode);
+			}
+			// this to trigger re-render when interview value change
+		},
+		[ interview, mode, transition ]
+	);
+
 	function save(name, interviewer) {
 		const interview = {
 			student: name,
@@ -56,7 +68,8 @@ export default function Appointment({
 		<article className="appointment">
 			<Header time={time} />
 			{mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
-			{mode === SHOW && (
+			{mode === SHOW &&
+			interview && (
 				<Show
 					student={interview.student}
 					interviewer={interview.interviewer}
