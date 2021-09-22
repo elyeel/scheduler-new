@@ -24,7 +24,41 @@ const SET_INTERVIEW = 'SET_INTERVIEW';
 let webSocket;
 
 export default function useApplicationData() {
+	// const updateSpots = (id, appointments) => {
+
+	// return tempDays;
+	// };
+
 	function reducer(state, action) {
+		console.log(action);
+		const { id, interview } = action.value;
+
+		const appointment = {
+			...state.appointments[id],
+			interview: { ...interview }
+		};
+		const appointments = {
+			...state.appointments,
+			[id]: appointment
+		};
+
+		//this can be solved by using state.day comparison with state.days to get only the spots in a day to be updated, given state.day is dynamic
+		let dayId = 0;
+		if (id > 5) dayId++;
+		if (id > 10) dayId++;
+		if (id > 15) dayId++;
+		if (id > 20) dayId++;
+
+		const spotsInDay = Object.values(appointments).reduce((a, c, i) => {
+			if (c.interview === null && i >= dayId * 5 && i < dayId * 5 + 5) a++;
+			return a;
+		}, 0);
+
+		//array.map create a new array with new value based on previous
+		const tempDays = state.days.map(
+			(day) => (day.id === dayId + 1 ? { ...day, spots: spotsInDay } : day)
+		);
+
 		switch (action.type) {
 			case SET_DAY:
 				return {
@@ -41,8 +75,8 @@ export default function useApplicationData() {
 			case SET_INTERVIEW: {
 				return {
 					...state,
-					appointments: action.value.appointments,
-					days: action.value.days
+					appointments,
+					days: tempDays
 				};
 			}
 			default:
@@ -76,58 +110,27 @@ export default function useApplicationData() {
 
 			webSocket.onmessage = (response) => {
 				const { id, interview } = JSON.parse(response.data);
+
+				// console.log(response.data);
+				dispatch({
+					type: SET_INTERVIEW,
+					value: { id, interview }
+				});
 			};
-			// webSocket.onmessage = (response) => {
-			// 	const { id, interview } = JSON.parse(response.data);
-			// 	const appointment = {
-			// 		...state.appointments[id],
-			// 		interview: { ...interview }
-			// 	};
-			// 	const appointments = {
-			// 		...state.appointments,
-			// 		[id]: appointment
-			// 	};
-			// 	console.log(response.data);
-			// 	dispatch({
-			// 		type: SET_INTERVIEW,
-			// 		value: { appointments, days: updateSpots(id, appointments) }
-			// 	});
-			// };
 		});
 
 		return () => webSocket.close();
 	}, []);
 
-	const updateSpots = (id, appointments) => {
-		//this can be solved by using state.day comparison with state.days to get only the spots in a day to be updated, given state.day is dynamic
-		let dayId = 0;
-		if (id > 5) dayId++;
-		if (id > 10) dayId++;
-		if (id > 15) dayId++;
-		if (id > 20) dayId++;
-
-		const spotsInDay = Object.values(appointments).reduce((a, c, i) => {
-			if (c.interview === null && i >= dayId * 5 && i < dayId * 5 + 5) a++;
-			return a;
-		}, 0);
-
-		//array.map create a new array with new value based on previous
-		const tempDays = state.days.map(
-			(day) => (day.id === dayId + 1 ? { ...day, spots: spotsInDay } : day)
-		);
-
-		return tempDays;
-	};
-
 	function bookInterview(id, interview) {
-		const appointment = {
-			...state.appointments[id],
-			interview: { ...interview }
-		};
-		const appointments = {
-			...state.appointments,
-			[id]: appointment
-		};
+		// const appointment = {
+		// 	...state.appointments[id],
+		// 	interview: { ...interview }
+		// };
+		// const appointments = {
+		// 	...state.appointments,
+		// 	[id]: appointment
+		// };
 
 		const bookingConfig = {
 			method: 'put',
@@ -143,21 +146,21 @@ export default function useApplicationData() {
 			webSocket.send(
 				JSON.stringify({
 					type: SET_INTERVIEW,
-					value: { appointments, days: updateSpots(id, appointments) }
+					value: { id, interview }
 				})
 			)
 		);
 	}
 
 	function cancelInterview(id, interview = null) {
-		const appointment = {
-			...state.appointments[id],
-			interview
-		};
-		const appointments = {
-			...state.appointments,
-			[id]: appointment
-		};
+		// const appointment = {
+		// 	...state.appointments[id],
+		// 	interview
+		// };
+		// const appointments = {
+		// 	...state.appointments,
+		// 	[id]: appointment
+		// };
 
 		const destroyApptConfig = {
 			method: 'delete',
@@ -172,7 +175,7 @@ export default function useApplicationData() {
 			webSocket.send(
 				JSON.stringify({
 					type: SET_INTERVIEW,
-					value: { appointments, days: updateSpots(id, appointments) }
+					value: { id, interview }
 				})
 			)
 		);
