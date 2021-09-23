@@ -6,6 +6,7 @@ export default function Form(props) {
 	const { interviewers, back, save } = props;
 	const [ studentName, setStudentName ] = useState(props.name || '');
 	const [ interviewer, setInterviewer ] = useState(props.interviewer || null);
+	const [ error, setError ] = useState('');
 
 	const reset = () => {
 		setStudentName('');
@@ -17,7 +18,14 @@ export default function Form(props) {
 		back();
 	};
 
-	const onSave = () => save(studentName, interviewer);
+	const onSave = () => {
+		if (studentName === '') {
+			setError('Student name cannot be blank');
+			return;
+		}
+
+		save(studentName, interviewer);
+	};
 
 	return (
 		<main className="appointment__card appointment__card--create">
@@ -30,11 +38,13 @@ export default function Form(props) {
 						placeholder="Enter Student Name"
 						value={studentName}
 						onChange={(e) => setStudentName(e.target.value)}
+						data-testid="student-name-input"
 						/*
           This must be a controlled component
         */
 					/>
 				</form>
+				<section className="appointment__validation">{error}</section>
 				<InterviewerList
 					interviewers={interviewers}
 					value={interviewer}
