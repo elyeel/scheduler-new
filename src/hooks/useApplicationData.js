@@ -1,21 +1,21 @@
 import { useReducer, useEffect } from 'react';
 import axios from 'axios';
 
-const first = {
-	method: 'get',
-	url: 'http://localhost:8001/api/days',
-	headers: {}
-};
-const second = {
-	method: 'get',
-	url: 'http://localhost:8001/api/appointments',
-	headers: {}
-};
-const third = {
-	method: 'get',
-	url: 'http://localhost:8001/api/interviewers',
-	headers: {}
-};
+// const first = {
+// 	method: 'get',
+// 	url: '/api/days',
+// 	headers: {}
+// };
+// const second = {
+// 	method: 'get',
+// 	url: '/api/appointments',
+// 	headers: {}
+// };
+// const third = {
+// 	method: 'get',
+// 	url: '/api/interviewers',
+// 	headers: {}
+// };
 
 const SET_DAY = 'SET_DAY';
 const SET_APPLICATION_DATA = 'SET_APPLICATION_DATA';
@@ -94,7 +94,11 @@ export default function useApplicationData() {
 
 	useEffect(() => {
 		webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
-		Promise.all([ axios(first), axios(second), axios(third) ]).then((all) => {
+		Promise.all([
+			axios.get('/api/days'),
+			axios.get('/api/appointments'),
+			axios.get('/api/interviewers')
+		]).then((all) => {
 			dispatch({
 				type: SET_APPLICATION_DATA,
 				value: {
