@@ -35,7 +35,7 @@ export default function Appointment({
 			if (interview && mode === EMPTY) transition(SHOW);
 			if (interview === null && mode === SHOW) {
 				transition(EMPTY);
-				console.log('got here', interview, mode);
+				// console.log('got here', interview, mode);
 			}
 			// this to trigger re-render when interview value change
 		},
@@ -65,7 +65,7 @@ export default function Appointment({
 	};
 
 	return (
-		<article className="appointment">
+		<article className="appointment" data-testid="appointment">
 			<Header time={time} />
 			{mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
 			{mode === SHOW &&

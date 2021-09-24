@@ -1,6 +1,7 @@
 import { useReducer, useEffect } from 'react';
 import axios from 'axios';
 
+// disabled, to avoid axios is not function error when doing test
 // const first = {
 // 	method: 'get',
 // 	url: '/api/days',
@@ -123,13 +124,13 @@ export default function useApplicationData() {
 	}, []);
 
 	function bookInterview(id, interview) {
-		const bookingConfig = {
-			method: 'put',
-			url: `http://localhost:8001/api/appointments/${id}`,
-			data: { interview }
-		};
+		// const bookingConfig = {
+		// 	method: 'put',
+		// 	url: `http://localhost:8001/api/appointments/${id}`,
+		// 	data: { interview }
+		// };
 		//combine update spots with appointments during setState to avoid error
-		return axios(bookingConfig).then(() =>
+		return axios.put(`/api/appointments/${id}`).then(() =>
 			webSocket.send(
 				JSON.stringify({
 					type: SET_INTERVIEW,
@@ -140,12 +141,12 @@ export default function useApplicationData() {
 	}
 
 	function cancelInterview(id, interview = null) {
-		const destroyApptConfig = {
-			method: 'delete',
-			url: `http://localhost:8001/api/appointments/${id}`
-		};
+		// const destroyApptConfig = {
+		// 	method: 'delete',
+		// 	url: `http://localhost:8001/api/appointments/${id}`
+		// };
 
-		return axios(destroyApptConfig).then(() =>
+		return axios.delete(`/api/appointments/${id}`).then(() =>
 			webSocket.send(
 				JSON.stringify({
 					type: SET_INTERVIEW,
