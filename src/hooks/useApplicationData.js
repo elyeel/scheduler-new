@@ -1,22 +1,6 @@
 import { useReducer, useEffect } from 'react';
 import axios from 'axios';
 
-const first = {
-	method: 'get',
-	url: 'http://localhost:8001/api/days',
-	headers: {}
-};
-const second = {
-	method: 'get',
-	url: 'http://localhost:8001/api/appointments',
-	headers: {}
-};
-const third = {
-	method: 'get',
-	url: 'http://localhost:8001/api/interviewers',
-	headers: {}
-};
-
 const SET_DAY = 'SET_DAY';
 const SET_APPLICATION_DATA = 'SET_APPLICATION_DATA';
 const SET_INTERVIEW = 'SET_INTERVIEW';
@@ -61,7 +45,11 @@ export default function useApplicationData() {
 	// === setState({...state, day})
 
 	useEffect(() => {
-		Promise.all([ axios(first), axios(second), axios(third) ]).then((all) =>
+		Promise.all([
+			axios.get('/api/days'),
+			axios.get('/api/appointments'),
+			axios.get('/api/interviewers')
+		]).then((all) =>
 			dispatch({
 				type: SET_APPLICATION_DATA,
 				value: {
@@ -104,13 +92,8 @@ export default function useApplicationData() {
 			[id]: appointment
 		};
 
-		const bookingConfig = {
-			method: 'put',
-			url: `http://localhost:8001/api/appointments/${id}`,
-			data: { interview }
-		};
 		//combine update spots with appointments during setState to avoid error
-		return axios(bookingConfig).then(() =>
+		return axios.put(`/api/appointments/${id}`, { interview }).then(() =>
 			dispatch({
 				type: SET_INTERVIEW,
 				value: { appointments, days: updateSpots(id, appointments) }
@@ -128,12 +111,7 @@ export default function useApplicationData() {
 			[id]: appointment
 		};
 
-		const destroyApptConfig = {
-			method: 'delete',
-			url: `http://localhost:8001/api/appointments/${id}`
-		};
-
-		return axios(destroyApptConfig).then(() =>
+		return axios.delete(`/api/appointments/${id}`).then(() =>
 			dispatch({
 				type: SET_INTERVIEW,
 				value: { appointments, days: updateSpots(id, appointments) }
