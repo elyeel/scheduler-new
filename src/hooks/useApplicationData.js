@@ -21,10 +21,33 @@ export default function useApplicationData() {
 					interviewers: action.value.interviewers
 				};
 			case SET_INTERVIEW: {
+				const { id, interview = null } = action.value;
+				// console.log(id, interview);
+
+				const appointment = {
+					...state.appointments[id],
+					interview: interview ? { ...interview } : null
+				};
+				const appointments = {
+					...state.appointments,
+					[id]: appointment
+				};
+
+				//this can be solved by using state.day comparison with state.days to get only the spots in a day to be updated, given state.day is dynamic
+
+				const selectedDay = state.days.find((day) => day.name === state.day);
+				const nullAppts = selectedDay.appointments.reduce((a, c) => {
+					if (appointments[c].interview === null) a++;
+					return a;
+				}, 0);
+				const tempDays = state.days.map(
+					(day) => (day.name === state.day ? { ...day, spots: nullAppts } : day)
+				);
+
 				return {
 					...state,
-					appointments: action.value.appointments,
-					days: action.value.days
+					appointments,
+					days: tempDays
 				};
 			}
 			default:
@@ -61,60 +84,21 @@ export default function useApplicationData() {
 		);
 	}, []);
 
-	const updateSpots = (id, appointments) => {
-		//this can be solved by using state.day comparison with state.days to get only the spots in a day to be updated, given state.day is dynamic
-		let dayId = 0;
-		if (id > 5) dayId++;
-		if (id > 10) dayId++;
-		if (id > 15) dayId++;
-		if (id > 20) dayId++;
-
-		const spotsInDay = Object.values(appointments).reduce((a, c, i) => {
-			if (c.interview === null && i >= dayId * 5 && i < dayId * 5 + 5) a++;
-			return a;
-		}, 0);
-
-		//array.map create a new array with new value based on previous
-		const tempDays = state.days.map(
-			(day) => (day.id === dayId + 1 ? { ...day, spots: spotsInDay } : day)
-		);
-
-		return tempDays;
-	};
-
 	function bookInterview(id, interview) {
-		const appointment = {
-			...state.appointments[id],
-			interview: { ...interview }
-		};
-		const appointments = {
-			...state.appointments,
-			[id]: appointment
-		};
-
 		//combine update spots with appointments during setState to avoid error
 		return axios.put(`/api/appointments/${id}`, { interview }).then(() =>
 			dispatch({
 				type: SET_INTERVIEW,
-				value: { appointments, days: updateSpots(id, appointments) }
+				value: { id, interview }
 			})
 		);
 	}
 
 	function cancelInterview(id, interview = null) {
-		const appointment = {
-			...state.appointments[id],
-			interview
-		};
-		const appointments = {
-			...state.appointments,
-			[id]: appointment
-		};
-
 		return axios.delete(`/api/appointments/${id}`).then(() =>
 			dispatch({
 				type: SET_INTERVIEW,
-				value: { appointments, days: updateSpots(id, appointments) }
+				value: { id }
 			})
 		);
 	}
