@@ -130,7 +130,7 @@ export default function useApplicationData() {
 		// 	data: { interview }
 		// };
 		//combine update spots with appointments during setState to avoid error
-		return axios.put(`/api/appointments/${id}`).then(() =>
+		return axios.put(`/api/appointments/${id}`, { interview }).then(() =>
 			webSocket.send(
 				JSON.stringify({
 					type: SET_INTERVIEW,
