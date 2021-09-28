@@ -20,11 +20,7 @@
 		"build-storybook": "build-storybook -s public"
 	},
 	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
+		"production": [ ">0.2%", "not dead", "not op_mini all" ],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -45,10 +41,8 @@
 		"prop-types": "^15.7.2"
 	},
 	"jest": {
-		"watchPathIgnorePatterns": [
-			"<rootDir>/node_modules/",
-			"<rootDir>/.git/"
-		]
+		"watchPathIgnorePatterns": [ "<rootDir>/node_modules/", "<rootDir>/.git/" ],
+		"collectCoverageFrom": [ "src/**/*.js", "!src/index.js" ]
 	},
 	"proxy": "http://localhost:8001"
 }
