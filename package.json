@@ -16,14 +16,11 @@
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"storybook": "start-storybook -p 9009 -s public --ci",
-		"build-storybook": "build-storybook -s public"
+		"build-storybook": "build-storybook -s public",
+		"cypress": "cypress open -P ."
 	},
 	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
+		"production": [ ">0.2%", "not dead", "not op_mini all" ],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -44,14 +41,8 @@
 		"node-sass": "^4.14.0"
 	},
 	"jest": {
-		"watchPathIgnorePatterns": [
-			"<rootDir>/node_modules/",
-			"<rootDir>/.git/"
-		],
-		"collectCoverageFrom": [
-			"src/**/*.js",
-			"!src/index.js"
-		]
+		"watchPathIgnorePatterns": [ "<rootDir>/node_modules/", "<rootDir>/.git/" ],
+		"collectCoverageFrom": [ "src/**/*.js", "!src/index.js" ]
 	},
 	"proxy": "http://localhost:8001"
 }
